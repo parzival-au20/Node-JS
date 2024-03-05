@@ -7,6 +7,7 @@ app.set('view engine', 'pug');
 app.set('views', './views');
 
 
+
 const adminRoutes = require('./routes/admin');
 const userRoutes = require('./routes/shop');
 
@@ -20,7 +21,8 @@ app.use(express.static(path.join(__dirname,'public')));
 app.use('/admin', adminRoutes);
 app.use(userRoutes);
 
+
 app.use(errorController.get404Page);
 
-app.listen(3001);
+app.listen(3000);
 console.log("Listening port on http://localhost:3000");

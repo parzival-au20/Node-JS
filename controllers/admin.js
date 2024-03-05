@@ -26,14 +26,20 @@ exports.postAddProduct = (req,res,next) => {
 
 exports.getEditProduct = (req,res,next) => {
 
-    const product = Product.getById(req.params.productid);
     const categories = Category.getAll();
-    res.render('admin/edit-product', {
-        title: 'Edit Product',
-        path : '/admin/products',
-        product : product,
-        categories : categories,
-    });
+    const productId = req.params.productid;
+    Product.getById(productId)
+        .then((product) => {
+            res.render('admin/edit-product', {
+                title: 'Edit Product',
+                path : '/admin/products',
+                product : product[0][0],
+                categories : categories,
+            });
+        }).catch((err) => {
+            console.log(err);
+        });
+
 };
 
 exports.postEditProduct = (req,res,next) => {
@@ -58,12 +64,16 @@ exports.postDeleteProduct = (req,res,next) => {
 
 exports.getProducts = (req, res, next) => {
     //res.sendFile(path.join(__dirname,'../','views','index.html'));
-    const products = Product.getAll();
+    Product.getAll()
+        .then((products) => {
+            res.render('admin/products', {
+                title: 'Admin Products',
+                products:products[0],
+                path : '/admin/products',
+                action : req.query.action,
+            });
 
-    res.render('admin/products', {
-        title: 'Admin Products',
-        products:products,
-        path : '/admin/products',
-        action : req.query.action,
-    });
+        }).catch((err) => {
+            console.log(err);
+        });
 }
