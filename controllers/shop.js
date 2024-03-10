@@ -8,12 +8,18 @@ exports.getIndex = (req, res, next) => {
 
     Product.getAll()
         .then((products) => {
-            res.render('shop/index', {
-                title: 'Shopping',
-                products:products[0],
-                categories:categories,
-                path : '/'
-            });
+            Category.getAll()
+                .then((categories)=> {
+                    res.render('shop/index', {
+                        title: 'Shopping',
+                        products:products[0],
+                        categories:categories[0],
+                        path : '/'
+                    });
+                })
+                .catch( (err) => {
+                    console.log(err);
+                });
 
         }).catch((err) => {
             console.log(err);
@@ -40,17 +46,30 @@ exports.getProducts = (req, res, next) => {
 }
 
 exports.getProductsByCategoryId = (req, res, next) => {
-    const categoryid = req.params.categoryid;
-    const products = Product.getProductsByCategoryId(categoryid);
-    const categories = Category.getAll();
 
-    res.render('shop/products', {
-        title: 'Products',
-        products:products,
-        categories:categories,
-        selectedCategory:categoryid,
-        path : '/products'
-    });
+    const categoryid = req.params.categoryid;
+    //const products = Product.getProductsByCategoryId(categoryid);
+    //const categories = Category.getAll();
+
+    Product.getProductsByCategoryId(categoryid)
+        .then((products) => {
+            Category.getAll()
+                .then((categories)=> {
+                    res.render('shop/products', {
+                        title: 'Products',
+                        products:products,
+                        categories:categories[0],
+                        selectedCategory:categoryid,
+                        path : '/products'
+                    });
+                })
+                .catch( (err) => {
+                    console.log(err);
+                });
+
+        }).catch((err) => {
+            console.log(err);
+        });
 }
 
 exports.getProduct = (req, res, next) => {
